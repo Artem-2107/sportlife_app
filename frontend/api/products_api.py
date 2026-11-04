@@ -1,7 +1,7 @@
 from .client import api
 import requests
 import os
-from frontend.config import BASE_URL
+from config import BASE_URL
 
 
 def list_products(**params):

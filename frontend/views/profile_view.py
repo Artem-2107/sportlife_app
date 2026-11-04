@@ -1,5 +1,5 @@
 import flet as ft
-from frontend.api.client import api
+from api.client import api
 
 
 def build(app):

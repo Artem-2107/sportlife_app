@@ -1,6 +1,6 @@
 import flet as ft
-from frontend.api import auth_api
-from frontend.api.client import api
+from api import auth_api
+from api.client import api
 
 def build(app):
     username = ft.TextField(label="Логин", width=300)

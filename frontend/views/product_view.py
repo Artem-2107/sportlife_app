@@ -1,6 +1,6 @@
 import flet as ft
-from frontend.api import products_api, cart_api
-from frontend.api.client import api
+from api import products_api, cart_api
+from api.client import api
 
 
 def build(app, product_id):

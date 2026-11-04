@@ -1,6 +1,6 @@
 import flet as ft
-from frontend.api import cart_api, orders_api
-from frontend.api.client import api
+from api import cart_api, orders_api
+from api.client import api
 
 def build(app):
     items_box = ft.Column(scroll=ft.ScrollMode.AUTO, expand=True)

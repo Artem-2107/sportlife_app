@@ -1,6 +1,6 @@
 import flet as ft
-from frontend.api import admin_api, products_api
-from frontend.config import BASE_URL
+from api import admin_api, products_api
+from config import BASE_URL
 
 
 def build(app):

@@ -1,7 +1,7 @@
 import flet as ft
-from frontend.api.client import api
-from frontend.api import products_api
-from frontend.config import BASE_URL
+from api.client import api
+from api import products_api
+from config import BASE_URL
 
 def build(app):
     try:

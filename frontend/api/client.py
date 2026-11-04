@@ -1,5 +1,5 @@
 import requests
-from frontend.config import BASE_URL
+from config import BASE_URL
 
 
 class ApiClient:
