@@ -50,4 +50,4 @@ def main(page: ft.Page):
     App(page).go("login")
 
 if __name__ == "__main__":
-    ft.run(main)
+    ft.app(main)
