@@ -63,12 +63,8 @@ def main(page: ft.Page):
     page.padding = 0
     page.theme_mode = ft.ThemeMode.LIGHT
     
-    # Показываем начальный экран
     try:
         app = App(page)
         app.go("login")
     except Exception as e:
         page.add(ft.Text(f"Ошибка запуска: {str(e)}", color=ft.colors.RED))
-
-if __name__ == "__main__":
-    ft.app(target=main)
