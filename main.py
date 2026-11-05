@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Говорим Python'у, что наши экраны лежат в папке frontend
+sys.path.append(os.path.join(os.path.dirname(__file__), 'frontend'))
+
 import flet as ft
 from views import (
     login_view, register_view, catalog_view, product_view,
@@ -5,14 +11,16 @@ from views import (
 )
 
 class App:
-    def __init__(self, page):
+    def __init__(self, page: ft.Page):
         self.page = page
         self.page.title = "Спорт лайф"
         self.page.padding = 0
         self.page.theme_mode = ft.ThemeMode.DARK
+        self.page.update()
 
     def go(self, name, **kw):
         self.page.controls.clear()
+        
         try:
             views = {
                 "login": lambda: login_view.build(self),
@@ -25,18 +33,21 @@ class App:
                 "admin": lambda: admin_view.build(self),
                 "favorites": lambda: favorites_view.build(self),
             }
-            control = views[name]()
-            if control:
-                self.page.controls.append(control)
+            
+            if name in views:
+                control = views[name]()
+                if control:
+                    self.page.controls.append(control)
+                else:
+                    self.page.controls.append(ft.Text(f"Ошибка: экран {name} пуст"))
             else:
-                self.page.controls.append(ft.Text(f"Экран {name} пустой"))
+                self.page.controls.append(ft.Text(f"Ошибка: экран {name} не найден"))
         except Exception as e:
-            # Если ошибка — показываем её на экране телефона
             self.page.controls.append(
                 ft.Column([
-                    ft.Text("ОШИБКА ЗАПУСКА:", color=ft.Colors.RED, size=20, weight=ft.FontWeight.BOLD),
-                    ft.Text(str(e), color=ft.Colors.WHITE, size=14),
-                ], scroll=ft.ScrollMode.AUTO)
+                    ft.Text("ОШИБКА:", color=ft.Colors.RED, weight=ft.FontWeight.BOLD),
+                    ft.Text(str(e), color=ft.Colors.WHITE)
+                ])
             )
         self.page.update()
 
@@ -57,7 +68,11 @@ def main(page: ft.Page):
         app = App(page)
         app.go("login")
     except Exception as e:
-        page.add(ft.Text(f"КРИТИЧЕСКАЯ ОШИБКА: {str(e)}", color=ft.Colors.RED))
+        page.add(ft.Text(f"Критическая ошибка: {str(e)}", color=ft.Colors.RED))
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    # Проверка для разных версий Flet (для ПК и для телефона)
+    if hasattr(ft, "run"):
+        ft.run(main)
+    else:
+        ft.app(target=main)
