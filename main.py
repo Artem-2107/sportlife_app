@@ -61,10 +61,18 @@ class App:
 def main(page: ft.Page):
     page.title = "Спорт лайф"
     page.padding = 0
-    page.theme_mode = ft.ThemeMode.LIGHT
+    page.theme_mode = ft.ThemeMode.DARK # Поставил темную тему, как у тебя на скринах
     
     try:
         app = App(page)
         app.go("login")
     except Exception as e:
         page.add(ft.Text(f"Ошибка запуска: {str(e)}", color=ft.colors.RED))
+
+# --- ВОТ ГЛАВНЫЙ БЛОК ЗАПУСКА ---
+if __name__ == "__main__":
+    # Проверяем, какая версия Flet (старая или новая)
+    if hasattr(ft, "run"):
+        ft.run(main) # Для телефона (Flet 1.0+)
+    else:
+        ft.app(target=main) # Для ноутбука (Flet 0.24.1)
