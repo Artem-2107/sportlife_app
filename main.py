@@ -1,9 +1,3 @@
-import sys
-import os
-
-# Добавляем папку frontend в пути поиска
-sys.path.append(os.path.join(os.path.dirname(__file__), 'frontend'))
-
 import flet as ft
 from views import (
     login_view, register_view, catalog_view, product_view,
@@ -13,11 +7,13 @@ from views import (
 class App:
     def __init__(self, page):
         self.page = page
-        
+        self.page.title = "Спорт лайф"
+        self.page.padding = 0
+        self.page.theme_mode = ft.ThemeMode.DARK
+
     def go(self, name, **kw):
+        self.page.controls.clear()
         try:
-            self.page.controls.clear()
-            
             views = {
                 "login": lambda: login_view.build(self),
                 "register": lambda: register_view.build(self),
@@ -29,50 +25,39 @@ class App:
                 "admin": lambda: admin_view.build(self),
                 "favorites": lambda: favorites_view.build(self),
             }
-            
-            if name in views:
-                control = views[name]()
-                if control:
-                    self.page.controls.append(control)
-                    self.page.update()
-                else:
-                    self.page.add(ft.Text(f"View {name} returned None"))
+            control = views[name]()
+            if control:
+                self.page.controls.append(control)
             else:
-                self.page.add(ft.Text(f"View {name} not found"))
-                
+                self.page.controls.append(ft.Text(f"Экран {name} пустой"))
         except Exception as e:
-            self.page.controls.clear()
-            self.page.add(ft.Text(f"Error: {str(e)}", color=ft.colors.RED))
-            import traceback
-            self.page.add(ft.Text(traceback.format_exc()))
+            # Если ошибка — показываем её на экране телефона
+            self.page.controls.append(
+                ft.Column([
+                    ft.Text("ОШИБКА ЗАПУСКА:", color=ft.Colors.RED, size=20, weight=ft.FontWeight.BOLD),
+                    ft.Text(str(e), color=ft.Colors.WHITE, size=14),
+                ], scroll=ft.ScrollMode.AUTO)
+            )
+        self.page.update()
 
     def ok(self, m):
-        s = ft.SnackBar(ft.Text(m, color=ft.colors.WHITE), bgcolor=ft.colors.GREEN)
+        s = ft.SnackBar(ft.Text(m, color=ft.Colors.WHITE), bgcolor=ft.Colors.GREEN)
         self.page.overlay.append(s)
         s.open = True
         self.page.update()
 
     def error(self, m):
-        s = ft.SnackBar(ft.Text(m, color=ft.colors.WHITE), bgcolor=ft.colors.RED)
+        s = ft.SnackBar(ft.Text(m, color=ft.Colors.WHITE), bgcolor=ft.Colors.RED)
         self.page.overlay.append(s)
         s.open = True
         self.page.update()
 
 def main(page: ft.Page):
-    page.title = "Спорт лайф"
-    page.padding = 0
-    page.theme_mode = ft.ThemeMode.DARK # Поставил темную тему, как у тебя на скринах
-    
     try:
         app = App(page)
         app.go("login")
     except Exception as e:
-        page.add(ft.Text(f"Ошибка запуска: {str(e)}", color=ft.colors.RED))
+        page.add(ft.Text(f"КРИТИЧЕСКАЯ ОШИБКА: {str(e)}", color=ft.Colors.RED))
 
-# --- ВОТ ГЛАВНЫЙ БЛОК ЗАПУСКА ---
 if __name__ == "__main__":
-    # Проверяем, какая версия Flet (старая или новая)
-    if hasattr(ft, "run"):
-        ft.run(main) # Для телефона (Flet 1.0+)
-    else:
-        ft.app(target=main) # Для ноутбука (Flet 0.24.1)
+    ft.app(target=main)
